@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write       
-      contents: read        
+      id-token: write
+      contents: read
 
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
@@ -27,16 +27,14 @@ jobs:
         java-version: '21'
         cache: maven
 
-    # Login to Azure using NEW Service Principal secrets
+    # Azure Login using Service Principal JSON (AZURE_CREDENTIALS)
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ secrets.AZURE_SP_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        client-secret: ${{ secrets.AZURE_SP_CLIENT_SECRET }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        auth-type: service-principal
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # Get AKS credentials for kubectl + jkube apply
+    # Get AKS Credentials for deployment
     - name: Get AKS Credentials
       run: |
         az aks get-credentials \
@@ -44,22 +42,22 @@ jobs:
           --name ${{ secrets.AKS_CLUSTER_NAME }} \
           --overwrite-existing
 
-    # Build Spring Boot application
+    # Build Spring Boot JAR
     - name: Maven Build
       run: mvn -B clean package
 
-    # JKube build using JIB (containerizes without Docker)
-    - name: JKube - Build image
+    # JKube Build (JIB container build)
+    - name: JKube - Build Image
       run: mvn -B k8s:build
 
-    # Push to Azure Container Registry
-    - name: JKube - Push image
+    # Push Image to ACR
+    - name: JKube - Push Image
       run: mvn -B k8s:push
 
     # Generate Kubernetes manifests
-    - name: JKube - Resource Generation
+    - name: JKube - Generate Resources
       run: mvn -B k8s:resource
 
-    # Deploy to AKS
-    - name: JKube - Apply Deployment
+    # Apply Deployment to AKS
+    - name: JKube - Deploy to AKS
       run: mvn -B k8s:apply
