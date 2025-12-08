@@ -25,7 +25,14 @@
         <spring-cloud-azure.version>5.17.0</spring-cloud-azure.version>
         <springdoc.version>2.6.0</springdoc.version>
         <lombok.version>1.18.32</lombok.version>
-    </properties>
+         <jkube.generator.name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</jkube.generator.name>
+
+    <!-- Optional: declare build strategy as jib if later you use k8s:build/push -->
+    <jkube.build.strategy>jib</jkube.build.strategy>
+
+    <!-- Make generated Service a LoadBalancer -->
+    <jkube.enricher.jkube-service.type>LoadBalancer</jkube.enricher.jkube-service.type>
+</properties>
 
     <!-- Use Azure BOM to manage Azure dependency versions -->
     <dependencyManagement>
@@ -204,29 +211,6 @@
   <groupId>org.eclipse.jkube</groupId>
   <artifactId>kubernetes-maven-plugin</artifactId>
   <version>1.15.0</version>
-
-  <configuration>
-
-    <!-- JKube MUST see this for custom image override -->
-    <images>
-      <image>
-        <name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</name>
-      </image>
-    </images>
-
-    <!-- Correct section → NOT <kubernetes> -->
-      <enricher>
-      <config>
-        <jkube-service>
-          <type>LoadBalancer</type>
-          <ports>
-            <port>8080</port>
-          </ports>
-        </jkube-service>
-      </config>
-    </enricher>
-
-  </configuration>
 </plugin>
 </plugins>
   </build>
