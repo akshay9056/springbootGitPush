@@ -200,38 +200,35 @@
   </configuration>
 </plugin>
 
-    <!-- DEPLOY USING JKUBE -->
-    <plugin>
-      <groupId>org.eclipse.jkube</groupId>
-      <artifactId>kubernetes-maven-plugin</artifactId>
-      <version>1.15.0</version>
-      <configuration>
-        <images>
-          <image>
-            <!-- IMPORTANT: FORCE JKUBE TO USE ACR IMAGE NAME -->
-            <name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</name>
-          </image>
-        </images>
+ <plugin>
+  <groupId>org.eclipse.jkube</groupId>
+  <artifactId>kubernetes-maven-plugin</artifactId>
+  <version>1.15.0</version>
 
-         <enricher>
-      <config>
-        <jkube-image>
-          <name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</name>
-        </jkube-image>
-      </config>
-    </enricher>
+  <configuration>
 
-        <!-- Force service type: LoadBalancer -->
-        <kubernetes>
-          <service>
-            <type>LoadBalancer</type>
-            <ports>
-              <port>8080</port>
-            </ports>
-          </service>
-        </kubernetes>
-      </configuration>
-    </plugin>
+    <!-- JKube MUST see this for custom image override -->
+    <images>
+      <image>
+        <name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</name>
+        <build>
+          <strategy>jib</strategy>
+        </build>
+      </image>
+    </images>
+
+    <!-- Correct section → NOT <kubernetes> -->
+    <resources>
+      <service>
+        <type>LoadBalancer</type>
+        <ports>
+          <port>8080</port>
+        </ports>
+      </service>
+    </resources>
+
+  </configuration>
+</plugin>
 </plugins>
   </build>
 </project>
