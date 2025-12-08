@@ -213,6 +213,14 @@
           </image>
         </images>
 
+         <enricher>
+      <config>
+        <jkube-image>
+          <name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</name>
+        </jkube-image>
+      </config>
+    </enricher>
+
         <!-- Force service type: LoadBalancer -->
         <kubernetes>
           <service>
