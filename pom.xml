@@ -195,18 +195,34 @@
       <image>eclipse-temurin:21-jre</image>
     </from>
     <to>
-      <image>${env.ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</image>
+       <image>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</image>
     </to>
   </configuration>
 </plugin>
 
-    <!-- JKube handles Kubernetes deployment -->
+    <!-- DEPLOY USING JKUBE -->
     <plugin>
       <groupId>org.eclipse.jkube</groupId>
       <artifactId>kubernetes-maven-plugin</artifactId>
       <version>1.15.0</version>
+      <configuration>
+        <images>
+          <image>
+            <!-- IMPORTANT: FORCE JKUBE TO USE ACR IMAGE NAME -->
+            <name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</name>
+          </image>
+        </images>
+
+        <!-- Force service type: LoadBalancer -->
+        <kubernetes>
+          <service>
+            <type>LoadBalancer</type>
+            <ports>
+              <port>8080</port>
+            </ports>
+          </service>
+        </kubernetes>
+      </configuration>
     </plugin>
-        </plugins>
-    </build>
 
 </project>
