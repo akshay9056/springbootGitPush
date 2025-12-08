@@ -45,14 +45,12 @@ jobs:
     - name: Maven Build (Skip Tests)
       run: mvn -B clean package -DskipTests
 
-    - name: JKube - Build Image
-      run: mvn -B k8s:build -DskipTests
+    - name: Build Image with JIB
+      run: mvn -B jib:build -DskipTests
 
-    - name: JKube - Push Image
-      run: mvn -B k8s:push -DskipTests
-
-    - name: JKube - Generate Resources
+    - name: JKube - Generate K8s Resources
       run: mvn -B k8s:resource -DskipTests
 
     - name: JKube - Deploy to AKS
       run: mvn -B k8s:apply -DskipTests
+
