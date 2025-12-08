@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avangrid-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: avangrid-backend
+  template:
+    metadata:
+      labels:
+        app: avangrid-backend
+    spec:
+      containers:
+      - name: avangrid-backend
+        image: ${ACR_NAME}.azurecr.io/avangrid-backend:${project.version}
+        ports:
+        - containerPort: 8080
+
+        env:
+        # ======================
+        # Azure Blob Storage
+        # ======================
+        - name: AZURE_STORAGE_ACCOUNT_NAME
+          value: "${AZURE_STORAGE_ACCOUNT_NAME}"
+        - name: AZURE_STORAGE_CONTAINER_NAME
+          value: "${AZURE_STORAGE_CONTAINER_NAME}"
+
+        # ======================
+        # Azure Service Principal
+        # ======================
+        - name: AZURE_CLIENT_ID
+          value: "${AZURE_CLIENT_ID}"
+        - name: AZURE_CLIENT_SECRET
+          value: "${AZURE_CLIENT_SECRET}"
+        - name: AZURE_TENANT_ID
+          value: "${AZURE_TENANT_ID}"
+
+        # ======================
+        # PostgreSQL DB
+        # ======================
+        - name: DB_URL
+          value: "${DB_URL}"
+        - name: DB_USERNAME
+          value: "${DB_USERNAME}"
+        - name: DB_PASSWORD
+          value: "${DB_PASSWORD}"
+
+        # ======================
+        # JWT / OAuth Settings
+        # ======================
+        - name: JWT_ISSUER_URI
+          value: "${JWT_ISSUER_URI}"
+        - name: JWT_JWK_SET_URI
+          value: "${JWT_JWK_SET_URI}"
