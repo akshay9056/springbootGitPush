@@ -50,7 +50,7 @@ jobs:
       run: mvn -B clean package -DskipTests
 
     - name: Build Image with JIB
-      run: mvn -B k8s:build -DskipTests
+      run: mvn -B jib:build -DskipTests
 
     - name: JKube - Generate K8s Resources
       run: mvn -B k8s:resource -DskipTests
