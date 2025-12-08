@@ -65,7 +65,7 @@ jobs:
       run: mvn -B jib:build -DskipTests
 
     - name: JKube - Generate K8s Resources
-      run: >
+      run: |
         mvn -B \
           -DJWT_JWK_SET_URI="${{ secrets.JWT_JWK_SET_URI }}" \
           -DJWT_ISSUER_URI="${{ secrets.JWT_ISSUER_URI }}" \
@@ -81,7 +81,7 @@ jobs:
           k8s:resource -DskipTests
 
     - name: JKube - Deploy to AKS
-      run: >
+      run: |
         mvn -B \
           -DJWT_JWK_SET_URI="${{ secrets.JWT_JWK_SET_URI }}" \
           -DJWT_ISSUER_URI="${{ secrets.JWT_ISSUER_URI }}" \
