@@ -190,16 +190,14 @@
             <plugin>
                 <groupId>org.eclipse.jkube</groupId>
                 <artifactId>kubernetes-maven-plugin</artifactId>
-                <version>1.15.0</version>
+                <version>1.12.0</version>
 
                 <configuration>
                     <images>
                         <image>
                             <name>${env.ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</name>
                             <build>
-                    <jib>
-                        <image>${env.ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</image>
-                    </jib>
+                    <strategy>jib</strategy>
                 </build>
                         </image>
                     </images>
