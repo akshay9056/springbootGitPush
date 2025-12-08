@@ -31,7 +31,7 @@ jobs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        auth-type: service-principal
+        auth-type: SERVICE_PRINCIPAL
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     # Get AKS Credentials for deployment
