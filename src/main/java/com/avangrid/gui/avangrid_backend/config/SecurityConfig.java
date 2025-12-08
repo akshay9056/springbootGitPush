@@ -22,15 +22,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/actuator/**",         // health, metrics
                                 "/swagger-ui/**",       // swagger UI
-                                "/v3/api-docs/**",
-                                "/api/v1/recording",// openapi docs
-                                "/api/v1/recordings"           // your public endpoint
+                                "/v3/api-docs/**"      
                         ).permitAll()
                         //Secure endpoints
                         .requestMatchers(
                                 "/api/v1/fetch-metadata",
                                 "/api/v1/recording-metadata",
-
+                                "/api/v1/recording",
                                 "/api/v1/download-recordings"
                         ).authenticated()
                         .anyRequest().denyAll()
