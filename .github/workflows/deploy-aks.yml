@@ -9,6 +9,10 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write       
+      contents: read        
+
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
 
