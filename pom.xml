@@ -25,6 +25,7 @@
         <spring-cloud-azure.version>5.17.0</spring-cloud-azure.version>
         <springdoc.version>2.6.0</springdoc.version>
         <lombok.version>1.18.32</lombok.version>
+             <ACR_NAME>${ACR_NAME}</ACR_NAME>
          <jkube.generator.name>${ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</jkube.generator.name>
 <jkube.build.strategy>jib</jkube.build.strategy>
 </properties>
