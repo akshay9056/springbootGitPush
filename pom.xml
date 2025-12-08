@@ -215,14 +215,16 @@
     </images>
 
     <!-- Correct section → NOT <kubernetes> -->
-    <resources>
-      <service>
-        <type>LoadBalancer</type>
-        <ports>
-          <port>8080</port>
-        </ports>
-      </service>
-    </resources>
+      <enricher>
+      <config>
+        <jkube-service>
+          <type>LoadBalancer</type>
+          <ports>
+            <port>8080</port>
+          </ports>
+        </jkube-service>
+      </config>
+    </enricher>
 
   </configuration>
 </plugin>
