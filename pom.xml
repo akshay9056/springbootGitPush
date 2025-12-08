@@ -186,23 +186,23 @@
                 </configuration>
             </plugin>
 
-            <!-- JKube for AKS -->
-            <plugin>
-                <groupId>org.eclipse.jkube</groupId>
-                <artifactId>kubernetes-maven-plugin</artifactId>
-                <version>1.12.0</version>
+             <plugin>
+      <groupId>com.google.cloud.tools</groupId>
+      <artifactId>jib-maven-plugin</artifactId>
+      <version>3.4.1</version>
+      <configuration>
+        <to>
+          <image>${env.ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</image>
+        </to>
+      </configuration>
+    </plugin>
 
-                <configuration>
-                    <images>
-                        <image>
-                            <name>${env.ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</name>
-                            <build>
-                    <strategy>jib</strategy>
-                </build>
-                        </image>
-                    </images>
-                </configuration>
-            </plugin>
+    <!-- JKube handles Kubernetes deployment -->
+    <plugin>
+      <groupId>org.eclipse.jkube</groupId>
+      <artifactId>kubernetes-maven-plugin</artifactId>
+      <version>1.15.0</version>
+    </plugin>
         </plugins>
     </build>
 
