@@ -34,6 +34,10 @@ jobs:
         auth-type: SERVICE_PRINCIPAL
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Authenticate Docker to ACR
+      run: |
+        az acr login --name ${{ secrets.ACR_NAME }}
+
     # Get AKS Credentials for deployment
     - name: Get AKS Credentials
       run: |
