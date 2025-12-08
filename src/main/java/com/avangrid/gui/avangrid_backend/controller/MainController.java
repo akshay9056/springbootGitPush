@@ -30,11 +30,6 @@ public class MainController {
         this.service = service;
     }
 
-    @GetMapping("/recordings")
-    public List<Recording> getAllRecordings() {
-        return repository.findAll();
-    }
-
     @PostMapping("/fetch-metadata")
     public ResponseEntity<VpiSearchResponse> getAllRecordings(@Valid @RequestBody VpiSearchRequest request) {
 
