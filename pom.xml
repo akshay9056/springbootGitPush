@@ -211,9 +211,6 @@
     <images>
       <image>
         <name>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</name>
-        <build>
-          <strategy>jib</strategy>
-        </build>
       </image>
     </images>
 
