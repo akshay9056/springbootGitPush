@@ -224,5 +224,5 @@
         </kubernetes>
       </configuration>
     </plugin>
-
+</plugins>
 </project>
