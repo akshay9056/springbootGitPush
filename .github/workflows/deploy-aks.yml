@@ -65,7 +65,7 @@ jobs:
       run: mvn -B jib:build -DskipTests
 
     - name: JKube - Generate K8s YAML
-      run: mvn -B k8s:resource -DskipTests
+      run: mvn -B k8s:resource -DskipTests -DACR_NAME=${{ secrets.ACR_NAME }}
 
     - name: JKube - Apply YAML to AKS
-      run: mvn -B k8s:apply -DskipTests
+      run: mvn -B k8s:apply -DskipTests -DACR_NAME=${{ secrets.ACR_NAME }}
