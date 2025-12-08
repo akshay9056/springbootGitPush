@@ -65,7 +65,19 @@ jobs:
       run: mvn -B jib:build -DskipTests
 
     - name: JKube - Generate K8s YAML
-      run: mvn -B k8s:resource -DskipTests -DACR_NAME=${{ secrets.ACR_NAME }}
+      run: mvn -B k8s:resource -DskipTests \
+               -DJWT_JWK_SET_URI=${{ secrets.JWT_JWK_SET_URI }} \
+                  -DJWT_ISSUER_URI=${{ secrets.JWT_ISSUER_URI }} \
+                  -DDB_URL=${{ secrets.DB_URL }} \
+                  -DDB_USERNAME=${{ secrets.DB_USERNAME }} \
+                  -DDB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+                  -DAZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} \
+                  -DAZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }} \
+                  -DAZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }} \
+                  -DAZURE_STORAGE_ACCOUNT_NAME=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} \
+                  -DAZURE_STORAGE_CONTAINER_NAME=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }} \
+                  -DACR_NAME=${{ secrets.ACR_NAME }}
+
 
     - name: JKube - Apply YAML to AKS
       run: mvn -B k8s:apply -DskipTests -DACR_NAME=${{ secrets.ACR_NAME }}
