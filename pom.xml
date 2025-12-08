@@ -197,8 +197,10 @@
                         <image>
                             <name>${env.ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</name>
                             <build>
-                                <strategy>jib</strategy>
-                            </build>
+                    <jib>
+                        <image>${env.ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</image>
+                    </jib>
+                </build>
                         </image>
                     </images>
                 </configuration>
