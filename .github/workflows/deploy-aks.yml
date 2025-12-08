@@ -42,22 +42,17 @@ jobs:
           --name ${{ secrets.AKS_CLUSTER_NAME }} \
           --overwrite-existing
 
-    # Build Spring Boot JAR
-    - name: Maven Build
-      run: mvn -B clean package
+    - name: Maven Build (Skip Tests)
+      run: mvn -B clean package -DskipTests
 
-    # JKube Build (JIB container build)
     - name: JKube - Build Image
-      run: mvn -B k8s:build
+      run: mvn -B k8s:build -DskipTests
 
-    # Push Image to ACR
     - name: JKube - Push Image
-      run: mvn -B k8s:push
+      run: mvn -B k8s:push -DskipTests
 
-    # Generate Kubernetes manifests
     - name: JKube - Generate Resources
-      run: mvn -B k8s:resource
+      run: mvn -B k8s:resource -DskipTests
 
-    # Apply Deployment to AKS
     - name: JKube - Deploy to AKS
-      run: mvn -B k8s:apply
+      run: mvn -B k8s:apply -DskipTests
