@@ -35,8 +35,8 @@
         <!-- Plugin versions -->
         <jib.version>3.4.0</jib.version>
         <jkube.version>1.15.0</jkube.version>
-     <!-- Use public image with Java 21 + ffmpeg already installed -->
-    <base.image>${env.BASE_IMAGE}</base.image>
+        <!-- Use public image with Java 21 + ffmpeg already installed -->
+        <base.image>${env.BASE_IMAGE}</base.image>
 
     </properties>
 
@@ -146,41 +146,40 @@
             </plugin>
 
             <plugin>
-    <groupId>com.google.cloud.tools</groupId>
-    <artifactId>jib-maven-plugin</artifactId>
-    <version>${jib.version}</version>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.version}</version>
 
-    <configuration>
-        <from>
-            <image>${base.image}</image>
-        </from>
+                <configuration>
+                    <from>
+                        <image>${base.image}</image>
+                    </from>
 
-        <!-- Image name comes from Maven profile + ENV -->
-        <to>
-            <image>${jkube.generator.name}</image>
-            <tags>
-                <tag>${project.version}</tag>
-                <tag>latest</tag>
-            </tags>
-        </to>
+                    <!-- Image name comes from Maven profile + ENV -->
+                    <to>
+                        <image>${jkube.generator.name}</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                            <tag>latest</tag>
+                        </tags>
+                    </to>
 
-        <container>
-            <ports>
-                <port>8080</port>
-            </ports>
-            <entrypoint>
-                <shell>sh</shell>
-                <entrypoint>
-    <shell>sh</shell>
-    <option>-c</option>
-    <arg>
-        /bin/sh -c "apt-get update &amp;&amp; apt-get install -y ffmpeg &amp;&amp; rm -rf /var/lib/apt/lists/* &amp;&amp; exec java -jar /app/avangrid-backend-1.0.0.jar"
-    </arg>
-</entrypoint>
+                    <container>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <shell>sh</shell>
+                        <entrypoint>
+                            <shell>sh</shell>
+                            <option>-c</option>
+                            <arg>
+                                /bin/sh -c "apt-get update &amp;&amp; apt-get install -y ffmpeg &amp;&amp; rm -rf /var/lib/apt/lists/* &amp;&amp; exec java -jar /app/avangrid-backend-1.0.0.jar"
+                            </arg>
+                        </entrypoint>
 
-        </container>
-    </configuration>
-</plugin>
+                    </container>
+                </configuration>
+            </plugin>
 
 
             <plugin>
@@ -194,52 +193,52 @@
 
             <!-- JKube -->
             <plugin>
-    <groupId>org.eclipse.jkube</groupId>
-    <artifactId>kubernetes-maven-plugin</artifactId>
-    <version>${jkube.version}</version>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>kubernetes-maven-plugin</artifactId>
+                <version>${jkube.version}</version>
 
-    <configuration>
-        <namespace>${env.K8S_NAMESPACE}</namespace>
+                <configuration>
+                    <namespace>${env.K8S_NAMESPACE}</namespace>
 
-        <resources>
-            <env>
-                <SPRING_PROFILES_ACTIVE>${activeProfiles}</SPRING_PROFILES_ACTIVE>
-                <TZ>${env.TIME_ZONE}</TZ>
-            </env>
+                    <resources>
+                        <env>
+                            <SPRING_PROFILES_ACTIVE>${activeProfiles}</SPRING_PROFILES_ACTIVE>
+                            <TZ>${env.TIME_ZONE}</TZ>
+                        </env>
 
-            <replicas>${replicas}</replicas>
+                        <replicas>${replicas}</replicas>
 
-            <services>
-                <service>
-                    <name>${service-name}</name>
-                    <type>ClusterIP</type>
-                    <ports>
-                        <port>
-                            <port>80</port>
-                            <targetPort>8080</targetPort>
-                        </port>
-                    </ports>
-                </service>
-            </services>
+                        <services>
+                            <service>
+                                <name>${service-name}</name>
+                                <type>ClusterIP</type>
+                                <ports>
+                                    <port>
+                                        <port>80</port>
+                                        <targetPort>8080</targetPort>
+                                    </port>
+                                </ports>
+                            </service>
+                        </services>
 
-            <ingress>
-                <ingressRules>
-                    <ingressRule>
-                        <host>${env.INGRESS_HOST}</host>
-                        <paths>
-                            <path>
-                                <pathType>Prefix</pathType>
-                                <path>/biz/${service-name}/v1</path>
-                                <serviceName>${service-name}</serviceName>
-                                <servicePort>80</servicePort>
-                            </path>
-                        </paths>
-                    </ingressRule>
-                </ingressRules>
-            </ingress>
-        </resources>
-    </configuration>
-</plugin>
+                        <ingress>
+                            <ingressRules>
+                                <ingressRule>
+                                    <host>${env.INGRESS_HOST}</host>
+                                    <paths>
+                                        <path>
+                                            <pathType>Prefix</pathType>
+                                            <path>/biz/${service-name}/v1</path>
+                                            <serviceName>${service-name}</serviceName>
+                                            <servicePort>80</servicePort>
+                                        </path>
+                                    </paths>
+                                </ingressRule>
+                            </ingressRules>
+                        </ingress>
+                    </resources>
+                </configuration>
+            </plugin>
 
 
         </plugins>
@@ -251,20 +250,20 @@
     <profiles>
 
         <profile>
-    <id>dev</id>
-    <activation>
-        <property>
-            <name>env</name>
-            <value>dev</value>
-        </property>
-    </activation>
-    <properties>
-        <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
-        <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
-        <replicas>1</replicas>
-        <activeProfiles>dev</activeProfiles>
-    </properties>
-</profile>
+            <id>dev</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <properties>
+                <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
+                <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
+                <replicas>1</replicas>
+                <activeProfiles>dev</activeProfiles>
+            </properties>
+        </profile>
 
 
         <profile>
@@ -278,8 +277,8 @@
             <properties>
                 <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
                 <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
-        <replicas>1</replicas>
-        <activeProfiles>qat</activeProfiles
+                <replicas>1</replicas>
+                <activeProfiles>qat</activeProfiles>
             </properties>
         </profile>
 
@@ -294,15 +293,14 @@
             <properties>
                 <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
                 <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
-        <replicas>1</replicas>
-        <activeProfiles>prd</activeProfiles
+                <replicas>1</replicas>
+                <activeProfiles>prd</activeProfiles>
             </properties>
         </profile>
 
     </profiles>
 
 </project>
-
 
 
 
