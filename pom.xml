@@ -198,6 +198,7 @@
                 <version>${jkube.version}</version>
 
                 <configuration>
+                  <buildStrategy>jib</buildStrategy>
                     <namespace>${env.K8S_NAMESPACE}</namespace>
 
                     <resources>
@@ -301,6 +302,7 @@
     </profiles>
 
 </project>
+
 
 
 
