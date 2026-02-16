@@ -34,10 +34,10 @@ jobs:
             --overwrite-existing
 
       - name: Build JAR
-        run: mvn clean package -DskipTests
+        run: mvn -Denv=dev clean package -DskipTests
 
       - name: Build & Push Docker image (JIB)
-        run: mvn jib:build -DskipTests
+        run: mvn -Denv=dev jib:build -DskipTests
 
       - name: Deploy to AKS
         run: kubectl apply -f k8s/
