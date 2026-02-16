@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avangrid-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: avangrid-backend
+  template:
+    metadata:
+      labels:
+        app: avangrid-backend
+    spec:
+      containers:
+        - name: avangrid-backend
+          image: <ACR_NAME>.azurecr.io/avangrid-backend:latest
+          ports:
+            - containerPort: 8080
+
+          # 🔐 Secrets injected from AKS (not GitHub)
+          envFrom:
+            - secretRef:
+                name: avangrid-backend-secrets
