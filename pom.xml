@@ -199,6 +199,7 @@
 
                 <configuration>
                   <buildStrategy>jib</buildStrategy>
+                         <skipBuild>true</skipBuild>
                     <namespace>${env.K8S_NAMESPACE}</namespace>
 
                     <resources>
@@ -302,6 +303,7 @@
     </profiles>
 
 </project>
+
 
 
 
