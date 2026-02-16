@@ -36,6 +36,19 @@ jobs:
       - name: Build JAR
         run: mvn -Denv=dev clean package -DskipTests
 
+      - name: Setup Docker auth for JIB
+        run: |
+             mkdir -p ~/.docker
+              echo "{
+                \"auths\": {
+                  \"${{ secrets.ACR_NAME }}.azurecr.io\": {
+                    \"username\": \"${{ secrets.ACR_USERNAME }}\",
+                    \"password\": \"${{ secrets.ACR_PASSWORD }}\"
+                  }
+                }
+              }" > ~/.docker/config.json
+
+
       - name: Build & Push Docker image (JIB)
         run: mvn -Denv=dev jib:build -DskipTests
 
