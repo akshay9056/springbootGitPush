@@ -170,11 +170,14 @@
             </ports>
             <entrypoint>
                 <shell>sh</shell>
-                <option>-c</option>
-                <arg>
-                    /bin/sh -c "apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/* && exec java -jar /app/avangrid-backend-1.0.0.jar"
-                </arg>
-            </entrypoint>
+                <entrypoint>
+    <shell>sh</shell>
+    <option>-c</option>
+    <arg>
+        /bin/sh -c "apt-get update &amp;&amp; apt-get install -y ffmpeg &amp;&amp; rm -rf /var/lib/apt/lists/* &amp;&amp; exec java -jar /app/avangrid-backend-1.0.0.jar"
+    </arg>
+</entrypoint>
+
         </container>
     </configuration>
 </plugin>
@@ -299,6 +302,7 @@
     </profiles>
 
 </project>
+
 
 
 
