@@ -52,5 +52,6 @@ jobs:
       - name: Build & Push Docker image (JIB)
         run: mvn -Denv=dev jib:build -DskipTests
 
-      - name: Deploy to AKS
-        run: kubectl apply -f src/main/k8s/
+      - name: Deploy to AKS using JKube
+        run: mvn -B -Pdev k8s:apply -DskipTests
+
