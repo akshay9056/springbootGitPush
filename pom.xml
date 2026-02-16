@@ -256,7 +256,7 @@
         </property>
     </activation>
     <properties>
-        <acr.server>${env.ACR_NAME}</acr.server>
+        <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
         <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
         <replicas>1</replicas>
         <activeProfiles>dev</activeProfiles>
@@ -273,7 +273,7 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>${env.ACR_NAME}</acr.server>
+                <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
                 <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
         <replicas>1</replicas>
         <activeProfiles>qat</activeProfiles
@@ -289,7 +289,7 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>${env.ACR_NAME}</acr.server>
+                <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
                 <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
         <replicas>1</replicas>
         <activeProfiles>prd</activeProfiles
@@ -299,6 +299,7 @@
     </profiles>
 
 </project>
+
 
 
 
