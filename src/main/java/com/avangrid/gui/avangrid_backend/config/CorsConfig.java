@@ -1,5 +1,6 @@
 package com.avangrid.gui.avangrid_backend.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -8,7 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig {
 
-    private static final String FRONTEND_DOMAIN = "https://vrs.avangrid.com";
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -17,16 +19,14 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins(FRONTEND_DOMAIN)
+                        .allowedOrigins(allowedOrigins.split(","))
                         .allowedMethods("GET", "POST")
                         .allowedHeaders("*")
-                        .allowCredentials(true)
+                        .allowCredentials(false)
                         .maxAge(3600);
+
             }
         };
     }
 }
-
-
-
 

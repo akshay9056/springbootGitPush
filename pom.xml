@@ -1,36 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="
-           http://maven.apache.org/POM/4.0.0
-           https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.avangrid.gui</groupId>
-    <artifactId>avangrid-backend</artifactId>
-    <version>1.0.0</version>
-    <name>avangrid-backend</name>
-    <description>Enterprise backend for Avangrid using Spring Boot + Azure</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.13</version> <!-- enterprise stable for now -->
+        <version>3.3.13</version>
         <relativePath/>
     </parent>
 
-    <properties>
-        <java.version>21</java.version>
-        <spring-cloud-azure.version>5.17.0</spring-cloud-azure.version>
-        <springdoc.version>2.6.0</springdoc.version>
-        <lombok.version>1.18.32</lombok.version>
-             <ACR_NAME>${ACR_NAME}</ACR_NAME>
-         <jkube.generator.name>${ACR_NAME}.azurecr.io/avangrid-backend:${project.version}</jkube.generator.name>
-<jkube.build.strategy>jib</jkube.build.strategy>
-</properties>
+    <groupId>com.avangrid.gui</groupId>
+    <artifactId>avangrid-backend</artifactId>
 
-    <!-- Use Azure BOM to manage Azure dependency versions -->
+    <version>1.0.0</version>
+    <name>avangrid-backend</name>
+    <description>Avangrid Backend API</description>
+
+    <!-- ================================================= -->
+    <!-- Properties (CLIENT STYLE) -->
+    <!-- ================================================= -->
+    <properties>
+        <service-name>avangrid-backend</service-name>
+        <java.version>21</java.version>
+
+        <!-- Defaults (avoid unresolved placeholders) -->
+        <replicas>1</replicas>
+        <activeProfiles>dev</activeProfiles>
+        <osl.timezone>America/New_York</osl.timezone>
+
+        <!-- Plugin versions -->
+        <jib.version>3.4.0</jib.version>
+        <jkube.version>1.15.0</jkube.version>
+    </properties>
+
+    <!-- ================================================= -->
+    <!-- Dependencies -->
+    <!-- ================================================= -->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <!-- Azure -->
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-identity</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-storage-blob</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -43,166 +123,169 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <!-- Security + OAuth2 Resource Server -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>
-
-        <!-- Spring Data JPA + Postgres -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-identity</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-storage-blob</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv-platform</artifactId>
-            <version>1.5.10</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Devtools - optional in dev only -->
-       
-
-        <!-- Testing -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-
+    <!-- ================================================= -->
+    <!-- Build -->
+    <!-- ================================================= -->
     <build>
         <plugins>
+
+            <!-- Spring Boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- JIB (same style as client) -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.version}</version>
+                <configuration>
+                    <from>
+                        <image>${jib.apm.docker.image}</image>
+                    </from>
+                    <to>
+                        <image>${jkube.generator.name}</image>
+                        <tags>
+                            <tag>latest</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                    </container>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-configuration-processor</artifactId>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                    <compilerArgs>
-                        <arg>-parameters</arg>
-                    </compilerArgs>
+                    <release>21</release>
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot plugin -->
+
+            <!-- JKube -->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>kubernetes-maven-plugin</artifactId>
+                <version>${jkube.version}</version>
                 <configuration>
-                    <!-- Optionally exclude devtools from repackaged jar -->
-                    <excludes>
-                        <exclude>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-devtools</artifactId>
-                        </exclude>
-                    </excludes>
+                    <namespace>ccaas</namespace>
+
+                    <resources>
+                        <env>
+                            <SPRING_PROFILES_ACTIVE>${activeProfiles}</SPRING_PROFILES_ACTIVE>
+                            <TZ>${osl.timezone}</TZ>
+                        </env>
+
+                        <replicas>${replicas}</replicas>
+
+                        <services>
+                            <service>
+                                <name>${service-name}</name>
+                                <type>ClusterIP</type>
+                                <ports>
+                                    <port>
+                                        <port>80</port>
+                                        <targetPort>8080</targetPort>
+                                    </port>
+                                </ports>
+                            </service>
+                        </services>
+
+                        <ingress>
+                            <ingressRules>
+                                <ingressRule>
+                                    <host>${ingress.host}</host>
+                                    <paths>
+                                        <path>
+                                            <pathType>Prefix</pathType>
+                                            <path>/biz/${service-name}/v1</path>
+                                            <serviceName>${service-name}</serviceName>
+                                            <servicePort>80</servicePort>
+                                        </path>
+                                    </paths>
+                                </ingressRule>
+                            </ingressRules>
+                        </ingress>
+
+                    </resources>
                 </configuration>
             </plugin>
 
-             <plugin>
-  <groupId>com.google.cloud.tools</groupId>
-  <artifactId>jib-maven-plugin</artifactId>
-  <version>3.4.1</version>
-  <configuration>
-    <from>
-      <image>eclipse-temurin:21-jre</image>
-    </from>
-    <to>
-       <image>avangridtestacr.azurecr.io/avangrid-backend:${project.version}</image>
-    </to>
-  </configuration>
-</plugin>
+        </plugins>
+    </build>
 
- <plugin>
-  <groupId>org.eclipse.jkube</groupId>
-  <artifactId>kubernetes-maven-plugin</artifactId>
-  <version>1.15.0</version>
-</plugin>
-</plugins>
-  </build>
+    <!-- ================================================= -->
+    <!-- ENV PROFILES (CLIENT STYLE) -->
+    <!-- ================================================= -->
+    <profiles>
+
+        <profile>
+            <id>dev</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <properties>
+                <acr.server>acrcwsdev001.azurecr.io</acr.server>
+                <ingress.host>ccaasdev.avangrid.net</ingress.host>
+                <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
+                <replicas>1</replicas>
+                <activeProfiles>dev</activeProfiles>
+                <jib.apm.docker.image>nexus.avangrid.net:8082/agr/openjdk-apm:21-jdk</jib.apm.docker.image>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>qat</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>qat</value>
+                </property>
+            </activation>
+            <properties>
+                <acr.server>acrcswqat001.azurecr.io</acr.server>
+                <ingress.host>ccaasqat.avangrid.net</ingress.host>
+                <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
+                <replicas>2</replicas>
+                <activeProfiles>qat</activeProfiles>
+                <jib.apm.docker.image>nexus.avangrid.net:8082/agr/openjdk-apm:21-jdk</jib.apm.docker.image>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prd</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>prd</value>
+                </property>
+            </activation>
+            <properties>
+                <acr.server>acrcswprd001.azurecr.io</acr.server>
+                <ingress.host>ccaas.avangrid.net</ingress.host>
+                <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
+                <replicas>3</replicas>
+                <activeProfiles>prod</activeProfiles>
+                <jib.apm.docker.image>nexus.avangrid.net:8082/agr/openjdk-apm:21-jdk</jib.apm.docker.image>
+            </properties>
+        </profile>
+
+    </profiles>
+
 </project>

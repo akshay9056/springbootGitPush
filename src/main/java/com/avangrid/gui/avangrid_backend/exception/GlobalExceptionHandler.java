@@ -1,6 +1,6 @@
 package com.avangrid.gui.avangrid_backend.exception;
 
-import com.avangrid.gui.avangrid_backend.model.ErrorResponse;
+import com.avangrid.gui.avangrid_backend.model.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
