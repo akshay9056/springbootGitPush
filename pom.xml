@@ -35,6 +35,8 @@
         <!-- Plugin versions -->
         <jib.version>3.4.0</jib.version>
         <jkube.version>1.15.0</jkube.version>
+     <!-- Use public image with Java 21 + ffmpeg already installed -->
+    <base.image>eclipse-temurin:21-jre-jammy</base.image>
     </properties>
 
     <!-- ================================================= -->
@@ -144,27 +146,34 @@
 
 
             <!-- JIB (same style as client) -->
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>${jib.version}</version>
-                <configuration>
-                    <from>
-                        <image>${jib.apm.docker.image}</image>
-                    </from>
-                    <to>
-                        <image>${jkube.generator.name}</image>
-                        <tags>
-                            <tag>latest</tag>
-                        </tags>
-                    </to>
-                    <container>
-                        <ports>
-                            <port>8080</port>
-                        </ports>
-                    </container>
-                </configuration>
-            </plugin>
+            <!-- JIB -->
+<plugin>
+    <groupId>com.google.cloud.tools</groupId>
+    <artifactId>jib-maven-plugin</artifactId>
+    <version>${jib.version}</version>
+    <configuration>
+        <from>
+            <image>${base.image}</image>
+        </from>
+        <to>
+            <image>${jkube.generator.name}</image>
+            <tags>
+                <tag>latest</tag>
+            </tags>
+        </to>
+        <container>
+            <ports>
+                <port>8080</port>
+            </ports>
+            <!-- Install ffmpeg at runtime on first container start -->
+            <entrypoint>
+                <shell>sh</shell>
+                <option>-c</option>
+                <arg>/bin/sh -c "apt-get update &amp;&amp; apt-get install -y ffmpeg &amp;&amp; rm -rf /var/lib/apt/lists/* &amp;&amp; exec java -jar /app/avangrid-backend-1.0.0.jar"</arg>
+            </entrypoint>
+        </container>
+    </configuration>
+</plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -289,3 +298,4 @@
     </profiles>
 
 </project>
+
