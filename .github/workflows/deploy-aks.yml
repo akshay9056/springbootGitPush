@@ -65,7 +65,7 @@ jobs:
           mvn clean package \
             -Denv=dev \
             -DskipTests \
-            k8s:build k8s:apply
+            k8s:build k8s:resource k8s:apply
         env:
           # Registry used by pom profiles
           ACR_NAME: ${{ secrets.ACR_NAME }}
