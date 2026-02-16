@@ -37,6 +37,7 @@
         <jkube.version>1.15.0</jkube.version>
      <!-- Use public image with Java 21 + ffmpeg already installed -->
     <base.image>eclipse-temurin:21-jre-jammy</base.image>
+
     </properties>
 
     <!-- ================================================= -->
@@ -250,7 +251,7 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>acrcwsdev001.azurecr.io</acr.server>
+                <acr.server>avangridacr.azurecr.io</acr.server>
                 <ingress.host>ccaasdev.avangrid.net</ingress.host>
                 <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
                 <replicas>1</replicas>
@@ -268,7 +269,7 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>acrcswqat001.azurecr.io</acr.server>
+                <acr.server>avangridacr.azurecr.io</acr.server>
                 <ingress.host>ccaasqat.avangrid.net</ingress.host>
                 <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
                 <replicas>2</replicas>
@@ -286,7 +287,7 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>acrcswprd001.azurecr.io</acr.server>
+                <acr.server>avangridacr.azurecr.io</acr.server>
                 <ingress.host>ccaas.avangrid.net</ingress.host>
                 <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
                 <replicas>3</replicas>
@@ -298,4 +299,5 @@
     </profiles>
 
 </project>
+
 
