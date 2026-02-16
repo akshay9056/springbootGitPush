@@ -1,4 +1,4 @@
-name: Build & Deploy to AKS using JKube
+name: Build & Deploy to AKS
 
 on:
   push:
@@ -9,90 +9,43 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
 
-    permissions:
-      id-token: write
-      contents: read
-
-    env:
-      ACR_NAME: ${{ secrets.ACR_NAME }}
-      AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-      AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
-
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-      JWT_ISSUER_URI: ${{ secrets.JWT_ISSUER_URI }}
-      JWT_JWK_SET_URI: ${{ secrets.JWT_JWK_SET_URI }}
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: "21"
-        cache: maven
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
 
-    # Login using AZURE_CREDENTIALS JSON (most important!)
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        auth-type: SERVICE_PRINCIPAL
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # Login to Azure (Service Principal JSON)
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: ACR Docker Login
-      run: |
-        az acr login --name ${{ secrets.ACR_NAME }}
+      # Login to Azure Container Registry
+      - name: Login to ACR
+        run: az acr login --name ${{ secrets.ACR_NAME }}
 
-    - name: Get AKS Credentials
-      run: |
-        az aks get-credentials \
-          --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} \
-          --name ${{ secrets.AKS_CLUSTER_NAME }} \
-          --overwrite-existing
+      # Get AKS kubeconfig
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} \
+            --name ${{ secrets.AKS_CLUSTER_NAME }} \
+            --overwrite-existing
 
-    - name: Maven Clean Build
-      run: mvn -B clean package -DskipTests
+      # Build jar
+      - name: Build application
+        run: mvn clean package -DskipTests
 
-    - name: Build & Push Image using JIB
-      run: mvn -B jib:build -DskipTests
+      # Build & push Docker image using JIB
+      - name: Build & Push Image
+        run: mvn jib:build -DskipTests
 
-    - name: JKube - Generate K8s Resources
-      run: |
-        mvn -B \
-          -DJWT_JWK_SET_URI="${{ secrets.JWT_JWK_SET_URI }}" \
-          -DJWT_ISSUER_URI="${{ secrets.JWT_ISSUER_URI }}" \
-          -DDB_URL="${{ secrets.DB_URL }}" \
-          -DDB_USERNAME="${{ secrets.DB_USERNAME }}" \
-          -DDB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-          -DAZURE_CLIENT_ID="${{ secrets.AZURE_CLIENT_ID }}" \
-          -DAZURE_CLIENT_SECRET="${{ secrets.AZURE_CLIENT_SECRET }}" \
-          -DAZURE_TENANT_ID="${{ secrets.AZURE_TENANT_ID }}" \
-          -DAZURE_STORAGE_ACCOUNT_NAME="${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" \
-          -DAZURE_STORAGE_CONTAINER_NAME="${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" \
-          -DACR_NAME="${{ secrets.ACR_NAME }}" \
-          k8s:resource -DskipTests
-
-    - name: JKube - Deploy to AKS
-      run: |
-        mvn -B \
-          -DJWT_JWK_SET_URI="${{ secrets.JWT_JWK_SET_URI }}" \
-          -DJWT_ISSUER_URI="${{ secrets.JWT_ISSUER_URI }}" \
-          -DDB_URL="${{ secrets.DB_URL }}" \
-          -DDB_USERNAME="${{ secrets.DB_USERNAME }}" \
-          -DDB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-          -DAZURE_CLIENT_ID="${{ secrets.AZURE_CLIENT_ID }}" \
-          -DAZURE_CLIENT_SECRET="${{ secrets.AZURE_CLIENT_SECRET }}" \
-          -DAZURE_TENANT_ID="${{ secrets.AZURE_TENANT_ID }}" \
-          -DAZURE_STORAGE_ACCOUNT_NAME="${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" \
-          -DAZURE_STORAGE_CONTAINER_NAME="${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" \
-          -DACR_NAME="${{ secrets.ACR_NAME }}" \
-          k8s:apply -DskipTests
-
+      # Deploy Kubernetes manifests
+      - name: Deploy to AKS
+        run: kubectl apply -f k8s/
