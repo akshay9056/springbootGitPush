@@ -14,12 +14,15 @@ spec:
     spec:
       containers:
         - name: avangrid-backend
-          image: avangridacr.azurecr.io/avangrid-backend:latest
+          image: ${IMAGE_NAME}:${IMAGE_TAG}
           ports:
             - containerPort: 8080
-
-          # 🔐 Secrets injected from AKS (not GitHub)
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: ${SPRING_PROFILE}
+    
           envFrom:
             - secretRef:
-                name: avangrid-backend-secrets
+              name: ${K8S_SECRET_NAME}
+
 
