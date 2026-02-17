@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: ${INGRESS_HOST}
+    - host: avangrid.104.42.40.82.nip.io
       http:
         paths:
           - path: /biz/avangrid-backend(/|$)(.*)
