@@ -65,6 +65,7 @@ jobs:
           mvn clean package jib:build \
             -Denv=dev \
             -DskipTests
+            -Djib.to.tags=${{ github.sha }},latest
         env:
           # Registry used by pom profiles
           ACR_NAME: ${{ secrets.ACR_NAME }}
@@ -83,6 +84,7 @@ jobs:
 
           # Container timezone
           TIME_ZONE: Asia/Kolkata
+        
       - name: Deploy to AKS (JKube)
         run: |
           mvn k8s:resource k8s:apply \
