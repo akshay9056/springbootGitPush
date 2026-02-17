@@ -179,11 +179,6 @@
                             <port>8080</port>
                         </ports>
                              <mainClass>com.avangrid.gui.avangrid_backend.AvangridBackendApplication</mainClass>
-                        <entrypoint>
-        <arg>/bin/sh</arg>
-        <arg>-c</arg>
-        <arg>apt-get update &amp;&amp; apt-get install -y ffmpeg &amp;&amp; rm -rf /var/lib/apt/lists/* &amp;&amp; exec java -jar /app/avangrid-backend-1.0.0.jar</arg>
-    </entrypoint>
 
                     </container>
                 </configuration>
@@ -311,6 +306,7 @@
     </profiles>
 
 </project>
+
 
 
 
