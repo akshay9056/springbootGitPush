@@ -169,7 +169,7 @@
                         <ports>
                             <port>8080</port>
                         </ports>
-                  
+                  <mainClass>com.avangrid.gui.avangrid_backend.AvangridBackendApplication</mainClass>
 
                     </container>
                 </configuration>
@@ -193,7 +193,7 @@
 
                 <configuration>
                   <buildStrategy>jib</buildStrategy>
-                         <skipBuild>false</skipBuild>
+                         <skipBuild>true</skipBuild>
                     <namespace>${env.K8S_NAMESPACE}</namespace>
 
                     <resources>
@@ -295,6 +295,7 @@
         </profile>
     </profiles>
 </project>
+
 
 
 
