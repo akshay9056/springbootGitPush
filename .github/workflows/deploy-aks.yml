@@ -59,13 +59,12 @@ jobs:
             }
           }" > ~/.docker/config.json
 
-      # 🚀 Build + Push image + Deploy using JKube
+      # 🚀 Build & Push multi-arch image with JIB
       - name: Maven Build & Deploy (DEV)
         run: |
           mvn clean package \
             -Denv=dev \
-            -DskipTests \
-            k8s:build k8s:resource k8s:apply
+            -DskipTests
         env:
           # Registry used by pom profiles
           ACR_NAME: ${{ secrets.ACR_NAME }}
@@ -83,4 +82,16 @@ jobs:
           K8S_NAMESPACE: ccaas
 
           # Container timezone
+          TIME_ZONE: Asia/Kolkata
+      - name: Deploy to AKS (JKube)
+        run: |
+          mvn k8s:resource k8s:apply \
+            -Denv=dev \
+            -DskipTests
+        env:
+          ACR_NAME: ${{ secrets.ACR_NAME }}
+          BASE_IMAGE: ${{ secrets.BASE_IMAGE }}
+          INGRESS_HOST: ${{ vars.INGRESS_HOST_DEV }}
+          K8S_SECRET_NAME: ${{ secrets.K8S_SECRET_NAME }}
+          K8S_NAMESPACE: ccaas
           TIME_ZONE: Asia/Kolkata
