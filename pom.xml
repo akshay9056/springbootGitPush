@@ -213,11 +213,7 @@
                     <namespace>${env.K8S_NAMESPACE}</namespace>
 
                     <resources>
-                              <controller>
-                <nodeSelector>
-                    <kubernetes.io/arch>amd64</kubernetes.io/arch>
-                </nodeSelector>
-            </controller>
+                           
                         <env>
                             <SPRING_PROFILES_ACTIVE>${activeProfiles}</SPRING_PROFILES_ACTIVE>
                             <TZ>${env.TIME_ZONE}</TZ>
@@ -318,6 +314,7 @@
     </profiles>
 
 </project>
+
 
 
 
