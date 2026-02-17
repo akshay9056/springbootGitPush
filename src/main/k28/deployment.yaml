@@ -18,6 +18,7 @@ spec:
     spec:
       containers:
         - name: avangrid-backend
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
 
@@ -28,3 +29,5 @@ spec:
           envFrom:
             - secretRef:
                 name: ${K8S_SECRET_NAME}
+        
+
