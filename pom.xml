@@ -213,11 +213,6 @@
                     <namespace>${env.K8S_NAMESPACE}</namespace>
 
                     <resources>
-                           <containers>
-        <container>
-            <imagePullPolicy>Always</imagePullPolicy>
-        </container>
-    </containers>
                         <env>
                             <SPRING_PROFILES_ACTIVE>${activeProfiles}</SPRING_PROFILES_ACTIVE>
                             <TZ>${env.TIME_ZONE}</TZ>
@@ -318,6 +313,7 @@
     </profiles>
 
 </project>
+
 
 
 
