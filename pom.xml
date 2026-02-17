@@ -201,7 +201,6 @@
                             <SPRING_PROFILES_ACTIVE>${activeProfiles}</SPRING_PROFILES_ACTIVE>
                             <TZ>${env.TIME_ZONE}</TZ>
                         </env>
-
                         <replicas>${replicas}</replicas>
 
                         <services>
@@ -295,6 +294,7 @@
         </profile>
     </profiles>
 </project>
+
 
 
 
