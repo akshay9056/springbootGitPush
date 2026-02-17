@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avangrid-backend
+spec:
+  template:
+    spec:
+      containers:
+        - name: spring-boot
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: avangrid-backend-secret
