@@ -10,4 +10,4 @@ spec:
           imagePullPolicy: Always
           envFrom:
             - secretRef:
-                name: avangrid-backend-secret
+                name: avangrid-backend-secrets
