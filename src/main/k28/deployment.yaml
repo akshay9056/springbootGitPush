@@ -2,32 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: avangrid-backend
-
 spec:
-  replicas: 1
-
-  selector:
-    matchLabels:
-      app: avangrid-backend
-
   template:
-    metadata:
-      labels:
-        app: avangrid-backend
-
     spec:
       containers:
-        - name: avangrid-backend
+        - name: spring-boot
           imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: dev
-
           envFrom:
             - secretRef:
-                name: ${K8S_SECRET_NAME}
-        
-
+                name: avangrid-backend-secret
