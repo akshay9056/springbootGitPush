@@ -64,7 +64,7 @@ jobs:
         run: |
           mvn clean package jib:build \
             -Denv=dev \
-            -DskipTests
+            -DskipTests \
             -Djib.to.tags=${{ github.sha }},latest
         env:
           # Registry used by pom profiles
