@@ -178,6 +178,7 @@
                         <ports>
                             <port>8080</port>
                         </ports>
+                             <mainClass>com.avangrid.gui.avangrid_backend.AvangridBackendApplication</mainClass>
                         <entrypoint>
         <arg>/bin/sh</arg>
         <arg>-c</arg>
@@ -310,6 +311,7 @@
     </profiles>
 
 </project>
+
 
 
 
