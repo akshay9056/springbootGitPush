@@ -153,16 +153,7 @@
                 <configuration>
                     <from>
                         <image>${base.image}</image>
-                             <platforms>
-        <platform>
-            <architecture>amd64</architecture>
-            <os>linux</os>
-        </platform>
-        <platform>
-            <architecture>arm64</architecture>
-            <os>linux</os>
-        </platform>
-    </platforms>
+                            
                     </from>
 
                     <!-- Image name comes from Maven profile + ENV -->
@@ -306,6 +297,7 @@
     </profiles>
 
 </project>
+
 
 
 
