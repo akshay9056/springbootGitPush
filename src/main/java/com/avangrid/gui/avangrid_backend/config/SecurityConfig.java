@@ -81,7 +81,8 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+                .requiresChannel(channel -> channel
+                                  .requestMatchers("/actuator/**").requiresInsecure().anyRequest().requiresSecure())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -162,3 +163,4 @@ public class SecurityConfig {
         };
     }
 }
+
