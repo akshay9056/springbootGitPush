@@ -160,7 +160,7 @@
                         <image>${jkube.generator.name}</image>
                         <tags>
                             <tag>${project.version}</tag>
-                            <tag>latest</tag>
+                            <tag>${tags}</tag>
                         </tags>
                     </to>
 
@@ -292,6 +292,7 @@
         </profile>
     </profiles>
 </project>
+
 
 
 
