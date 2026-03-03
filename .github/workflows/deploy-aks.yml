@@ -47,11 +47,11 @@ jobs:
       # Build + Push image (same behavior as Jenkins deploy stage)
       - name: Maven Deploy (Build + Push)
         run: |
-          mvn -B \
+          mvn -B clean package \
             -Dservice-name=${SERVICE_NAME} \
             -DskipTests=true \
             -P${MAVEN_PROFILE} \
-            deploy
+            jib:build
 
       # Deploy manifests using JKube
       - name: Deploy to AKS using JKube
