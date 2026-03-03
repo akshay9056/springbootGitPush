@@ -16,7 +16,7 @@
     <artifactId>avangrid-backend</artifactId>
 
     <version>1.0.1-SNAPSHOT</version>
-    <name>avangrid-backend</name>
+    <name>avangrid-backend-test</name>
     <description>Avangrid Backend API</description>
 
     <!-- ================================================= -->
@@ -337,7 +337,7 @@
             </activation>
             <properties>
                 <environment>dev</environment>
-                <acr.server>acravangrid.azurecr.io</acr.server>
+                <acr.server>avangridacr.azurecr.io</acr.server>
                 <ingress.host>testccaasdev.myaks.net</ingress.host>
                 <jib.base.image>avangridacr.azurecr.io/java21-ffmpeg:2.0</jib.base.image>
                 <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
@@ -357,7 +357,7 @@
             </activation>
             <properties>
                 <environment>qat</environment>
-                <acr.server>acravangrid.azurecr.io</acr.server>
+                <acr.server>avangridacr.azurecr.io</acr.server>
                 <ingress.host>testccaasdev.myaks.net</ingress.host>
                 <jib.base.image>avangridacr.azurecr.io/java21-ffmpeg:2.0</jib.base.image>
                 <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
@@ -377,7 +377,7 @@
             </activation>
             <properties>
                 <environment>prd</environment>
-                <acr.server>acravangrid.azurecr.io</acr.server>
+                <acr.server>avangridacr.azurecr.io</acr.server>
                 <ingress.host>testccaasdev.myaks.net</ingress.host>
                 <jib.base.image>avangridacr.azurecr.io/java21-ffmpeg:2.0</jib.base.image>
                 <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
@@ -388,6 +388,7 @@
         </profile>
     </profiles>
 </project>
+
 
 
 
