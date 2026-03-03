@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SERVICE_NAME: scg-avangrid-backend
+      SERVICE_NAME: avangrid-backend-test
       MAVEN_PROFILE: dev
       NAMESPACE: ccaas
 
