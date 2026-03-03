@@ -16,14 +16,14 @@
     <artifactId>avangrid-backend</artifactId>
 
     <version>1.0.1-SNAPSHOT</version>
-    <name>avangrid-backend-test</name>
+    <name>avangrid-backend</name>
     <description>Avangrid Backend API</description>
 
     <!-- ================================================= -->
     <!-- Properties -->
     <!-- ================================================= -->
     <properties>
-        <service-name>avangrid-backend</service-name>
+        <service-name>avangrid-backend-test</service-name>
         <java.version>21</java.version>
         <replicas>1</replicas>
         <jib.version>3.4.0</jib.version>
@@ -388,6 +388,7 @@
         </profile>
     </profiles>
 </project>
+
 
 
 
