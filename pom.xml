@@ -15,27 +15,20 @@
     <groupId>com.avangrid.gui</groupId>
     <artifactId>avangrid-backend</artifactId>
 
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>avangrid-backend</name>
     <description>Avangrid Backend API</description>
 
     <!-- ================================================= -->
-    <!-- Properties (CLIENT STYLE) -->
+    <!-- Properties -->
     <!-- ================================================= -->
     <properties>
         <service-name>avangrid-backend</service-name>
         <java.version>21</java.version>
-
-        <!-- Defaults (avoid unresolved placeholders) -->
         <replicas>1</replicas>
-        <activeProfiles>dev</activeProfiles>
-        <osl.timezone>America/New_York</osl.timezone>
-
-        <!-- Plugin versions -->
         <jib.version>3.4.0</jib.version>
         <jkube.version>1.15.0</jkube.version>
-        <!-- Use public image with Java 21 + ffmpeg already installed -->
-        <base.image>${env.BASE_IMAGE}</base.image>
+
 
     </properties>
 
@@ -97,6 +90,11 @@
             <artifactId>azure-storage-blob</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-starter-keyvault-secrets</artifactId>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -115,6 +113,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-sdk-bom</artifactId>
+                <version>1.2.27</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>com.azure</groupId>
                 <artifactId>azure-sdk-bom</artifactId>
@@ -151,8 +156,8 @@
 
                 <configuration>
                     <from>
-                        <image>${base.image}</image>
-                            
+                        <image>${jib.base.image}</image>
+
                     </from>
 
                     <!-- Image name comes from Maven profile + ENV -->
@@ -168,10 +173,19 @@
                         <ports>
                             <port>8080</port>
                         </ports>
-                  <mainClass>com.avangrid.gui.avangrid_backend.AvangridBackendApplication</mainClass>
+                        <mainClass>com.avangrid.gui.avangrid_backend.AvangridBackendApplication</mainClass>
 
                     </container>
+                    <containerizingMode>packaged</containerizingMode>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
 
@@ -191,16 +205,65 @@
                 <version>${jkube.version}</version>
 
                 <configuration>
-                  <buildStrategy>jib</buildStrategy>
-                         <skipBuild>true</skipBuild>
-                    <namespace>${env.K8S_NAMESPACE}</namespace>
+                    <buildStrategy>jib</buildStrategy>
+                    <skipBuild>true</skipBuild>
+                    <namespace>ccaas</namespace>
 
                     <resources>
                         <env>
-                            <SPRING_PROFILES_ACTIVE>${activeProfiles}</SPRING_PROFILES_ACTIVE>
-                            <TZ>${env.TIME_ZONE}</TZ>
+
+                            <SPRING_PROFILES_ACTIVE>${environment}</SPRING_PROFILES_ACTIVE>
+                            <TZ>${osl.timezone}</TZ>
                         </env>
+
+
+
                         <replicas>${replicas}</replicas>
+                        <imagePullPolicy>Always</imagePullPolicy>
+                        <serviceAccount>default</serviceAccount>
+
+                        <!-- Ingress Annotations -->
+                        <annotations>
+                            <ingress>
+
+                                <!-- Required for nginx ingress controller -->
+                                <property>
+                                    <name>kubernetes.io/ingress.class</name>
+                                    <value>nginx</value>
+                                </property>
+
+                                <!-- Force HTTPS redirect -->
+                                <property>
+                                    <name>nginx.ingress.kubernetes.io/force-ssl-redirect</name>
+                                    <value>true</value>
+                                </property>
+
+                                <!-- Increase read timeout (important for long API calls / file streaming) -->
+                                <property>
+                                    <name>nginx.ingress.kubernetes.io/proxy-read-timeout</name>
+                                    <value>600</value>
+                                </property>
+
+                                <!-- Increase send timeout -->
+                                <property>
+                                    <name>nginx.ingress.kubernetes.io/proxy-send-timeout</name>
+                                    <value>600</value>
+                                </property>
+
+                                <!-- Required for regex paths -->
+                                <property>
+                                    <name>nginx.ingress.kubernetes.io/use-regex</name>
+                                    <value>true</value>
+                                </property>
+
+                                <!-- Rewrite path correctly when using regex -->
+                                <property>
+                                    <name>nginx.ingress.kubernetes.io/rewrite-target</name>
+                                    <value>/$2</value>
+                                </property>
+
+                            </ingress>
+                        </annotations>
 
                         <services>
                             <service>
@@ -208,21 +271,32 @@
                                 <type>ClusterIP</type>
                                 <ports>
                                     <port>
+                                        <protocol>tcp</protocol>
                                         <port>80</port>
                                         <targetPort>8080</targetPort>
+                                        <name>http</name>
                                     </port>
                                 </ports>
                             </service>
                         </services>
 
                         <ingress>
+                            <!--                            <ingressTlsConfigs>-->
+                            <!--                                <ingressTlsConfig>-->
+                            <!--                                    <hosts>-->
+                            <!--                                        <host>${ingress.host}</host>-->
+                            <!--                                    </hosts>-->
+                            <!--                                    <secretName>${ingress.host}</secretName>-->
+                            <!--                                </ingressTlsConfig>-->
+                            <!--                            </ingressTlsConfigs>-->
+
                             <ingressRules>
                                 <ingressRule>
-                                    <host>${env.INGRESS_HOST}</host>
+                                    <host>${ingress.host}</host>
                                     <paths>
                                         <path>
-                                            <pathType>Prefix</pathType>
-                                            <path>/biz/${service-name}/v1</path>
+                                            <pathType>ImplementationSpecific</pathType>
+                                            <path>/biz/${service-name}/v1(/|$)(.*)</path>
                                             <serviceName>${service-name}</serviceName>
                                             <servicePort>80</servicePort>
                                         </path>
@@ -230,6 +304,8 @@
                                 </ingressRule>
                             </ingressRules>
                         </ingress>
+
+
                     </resources>
                 </configuration>
             </plugin>
@@ -238,8 +314,16 @@
         </plugins>
     </build>
 
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>nexus</id>-->
+<!--            <name>nexus-snapshots</name>-->
+<!--            <url>https://nexus.avangrid.net/repository/maven-snapshots/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
+
     <!-- ================================================= -->
-    <!-- ENV PROFILES (CLIENT STYLE) -->
+    <!-- ENV PROFILES -->
     <!-- ================================================= -->
     <profiles>
 
@@ -252,10 +336,14 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
-                <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
+                <environment>dev</environment>
+                <acr.server>acravangrid.azurecr.io</acr.server>
+                <ingress.host>testccaasdev.myaks.net</ingress.host>
+                <jib.base.image>avangridacr.azurecr.io/java21-ffmpeg:2.0</jib.base.image>
+                <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
                 <replicas>1</replicas>
-                <activeProfiles>dev</activeProfiles>
+                <max-replicas>5</max-replicas>
+                <osl.timezone>America/New_York</osl.timezone>
             </properties>
         </profile>
 
@@ -268,10 +356,14 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
-                <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
+                <environment>qat</environment>
+                <acr.server>acravangrid.azurecr.io</acr.server>
+                <ingress.host>testccaasdev.myaks.net</ingress.host>
+                <jib.base.image>avangridacr.azurecr.io/java21-ffmpeg:2.0</jib.base.image>
+                <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
                 <replicas>1</replicas>
-                <activeProfiles>qat</activeProfiles>
+                <max-replicas>5</max-replicas>
+                <osl.timezone>America/New_York</osl.timezone>
             </properties>
         </profile>
 
@@ -284,16 +376,18 @@
                 </property>
             </activation>
             <properties>
-                <acr.server>${env.ACR_NAME}.azurecr.io</acr.server>
-                <jkube.generator.name>${acr.server}/${service-name}</jkube.generator.name>
+                <environment>prd</environment>
+                <acr.server>acravangrid.azurecr.io</acr.server>
+                <ingress.host>testccaasdev.myaks.net</ingress.host>
+                <jib.base.image>avangridacr.azurecr.io/java21-ffmpeg:2.0</jib.base.image>
+                <jkube.generator.name>${acr.server}/${service-name}:${project.version}</jkube.generator.name>
                 <replicas>1</replicas>
-                <activeProfiles>prd</activeProfiles>
+                <max-replicas>5</max-replicas>
+                <osl.timezone>America/New_York</osl.timezone>
             </properties>
         </profile>
     </profiles>
 </project>
-
-
 
 
 
